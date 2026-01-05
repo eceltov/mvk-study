@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Typography, Button, Paper, Box, CircularProgress } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -20,7 +20,7 @@ const LandingPage = ({ onStart }) => {
       });
   }, []);
 
-  const components = {
+  const components = useMemo(() => ({
     h1: ({ node, ...props }) => <Typography variant="h3" gutterBottom {...props} />,
     h2: ({ node, ...props }) => <Typography variant="h4" gutterBottom {...props} />,
     h3: ({ node, ...props }) => <Typography variant="h5" gutterBottom {...props} />,
@@ -33,7 +33,7 @@ const LandingPage = ({ onStart }) => {
     ),
     ul: ({ node, ...props }) => <Box component="ul" sx={{ pl: 2 }} {...props} />,
     ol: ({ node, ...props }) => <Box component="ol" sx={{ pl: 2 }} {...props} />,
-  };
+  }), []);
 
   return (
     <Container maxWidth="md">
