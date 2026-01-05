@@ -1,46 +1,55 @@
-import React from 'react';
-import { Container, Typography, Button, Paper, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Button, Paper, Box, CircularProgress } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const LandingPage = ({ onStart }) => {
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/landing.md')
+      .then(res => res.text())
+      .then(text => {
+        setContent(text);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading landing page content:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const components = {
+    h1: ({ node, ...props }) => <Typography variant="h3" gutterBottom {...props} />,
+    h2: ({ node, ...props }) => <Typography variant="h4" gutterBottom {...props} />,
+    h3: ({ node, ...props }) => <Typography variant="h5" gutterBottom {...props} />,
+    h4: ({ node, ...props }) => <Typography variant="h6" gutterBottom {...props} />,
+    p: ({ node, ...props }) => <Typography variant="body1" paragraph {...props} />,
+    li: ({ node, ...props }) => (
+      <li style={{ marginBottom: '8px' }}>
+        <Typography variant="body1" component="span" {...props} />
+      </li>
+    ),
+    ul: ({ node, ...props }) => <Box component="ul" sx={{ pl: 2 }} {...props} />,
+    ol: ({ node, ...props }) => <Box component="ol" sx={{ pl: 2 }} {...props} />,
+  };
+
   return (
     <Container maxWidth="md">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Marine Image Study
-        </Typography>
-        <Typography variant="body1" paragraph>
-          Welcome to the study. In this experiment, you will be shown a series of marine images.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          <strong>Instructions:</strong>
-        </Typography>
-        <Box component="ul" sx={{ pl: 2 }}>
-          <li>
-            <Typography variant="body1" paragraph>
-              First, you will see an image of a marine environment for a few seconds. Pay close attention to the details.
-            </Typography>
-          </li>
-          <li>
-            <Typography variant="body1" paragraph>
-              Next, a distractor image will appear briefly.
-            </Typography>
-          </li>
-          <li>
-            <Typography variant="body1" paragraph>
-              Then, you will see a white canvas. Please draw a rectangle where you remember seeing a specific object of interest.
-            </Typography>
-          </li>
-          <li>
-            <Typography variant="body1" paragraph>
-              You will also be asked to describe the scene and the object you identified.
-            </Typography>
-          </li>
-          <li>
-            <Typography variant="body1" paragraph>
-              Finally, the original image will reappear with your rectangle. You can adjust the position of the rectangle to where you think the object actually was.
-            </Typography>
-          </li>
-        </Box>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+              {content}
+            </ReactMarkdown>
+          </Box>
+        )}
+        
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
           <Button variant="contained" color="primary" size="large" onClick={onStart}>
             Start Study
