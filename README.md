@@ -41,62 +41,62 @@ git clone <repository-url>
 cd mvk-study
 ```
 
-2. Install client dependencies:
+2. Install dependencies:
 ```bash
+# Install root dependencies (ESLint)
+npm install
+
+# Install client dependencies
 cd client
 npm install
-```
 
-3. Install server dependencies:
-```bash
+# Install server dependencies
 cd ../server
 npm install
 ```
 
-## Development
+3. Configure Environment:
+   - Create a `.env` file in the `server` directory (see `server/.env.example` if available, or use the provided `.env`).
+   - Ensure `MASTER_IMAGE_DIR` points to your image dataset.
 
-### Running in Development Mode
+## Running the Application
 
-1. Start the server (from the `server` directory):
+### Production Mode (Recommended)
+This builds the client and serves it via the Node.js server, simulating the production environment.
+
+1. Build the client:
 ```bash
-cd server
-npm start
-```
-The server will run on `http://localhost:5000`
-
-2. In a new terminal, start the client (from the `client` directory):
-```bash
-cd client
-npm start
-```
-The React app will run on `http://localhost:3000` and proxy API requests to the server.
-
-### Testing with Prolific Parameters
-
-To test the Prolific integration, visit:
-```
-http://localhost:3000?PROLIFIC_PID=test-user-123
-```
-
-The app will capture the Prolific ID from the URL parameter.
-
-## Production Deployment
-
-1. Build the React app:
-```bash
-cd client
 npm run build
 ```
 
-2. The server is configured to serve the built React app from the `client/build` directory.
+2. Start the server:
+```bash
+npm start
+```
+The application will be available at `http://localhost:5000`.
 
-3. Start the server:
+### Development Mode
+For active development with Hot Module Replacement (HMR).
+
+1. Start the server (Terminal 1):
 ```bash
 cd server
 npm start
 ```
 
-4. Access the application at `http://localhost:5000`
+2. Start the client (Terminal 2):
+```bash
+cd client
+npm start
+```
+The client will run on `http://localhost:3000` (or another available port) and proxy API requests to the server.
+
+## Linting
+
+To check for code quality issues:
+```bash
+npm run lint
+```
 
 ## Environment Variables
 

@@ -2,131 +2,134 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Box, Button, Typography, Paper, Container } from '@mui/material';
 
 const AdjustmentView = ({ imageSrc, initialRect, onComplete }) => {
-  const [rect, setRect] = useState(initialRect);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [submitting, setSubmitting] = useState(false);
-  
-  const containerRef = useRef(null);
+    const [rect, setRect] = useState(initialRect);
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+    const [submitting, setSubmitting] = useState(false);
 
-  // Ensure rect is valid on mount
-  useEffect(() => {
-    if (initialRect) {
-      setRect(initialRect);
-    }
-  }, [initialRect]);
+    const containerRef = useRef(null);
 
-  const handleMouseDown = (e) => {
-    e.preventDefault(); // Prevent text selection
-    const containerRect = containerRef.current.getBoundingClientRect();
-    
-    setDragOffset({
-      x: e.clientX - (containerRect.left + rect.x),
-      y: e.clientY - (containerRect.top + rect.y)
-    });
-    setIsDragging(true);
-  };
+    // Ensure rect is valid on mount
+    useEffect(() => {
+        if (initialRect) {
+            setRect(initialRect);
+        }
+    }, [initialRect]);
 
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    
-    const containerRect = containerRef.current.getBoundingClientRect();
-    
-    // Calculate new position relative to container
-    // We need to account for the container's position on screen
-    // But since rect.x/y are relative to container, we just need mouse movement
-    
-    // Actually, simpler approach:
-    // New X = Mouse X - Container Left - Drag Offset X
-    
-    let newX = e.clientX - containerRect.left - dragOffset.x;
-    let newY = e.clientY - containerRect.top - dragOffset.y;
+    const handleMouseDown = (e) => {
+        e.preventDefault(); // Prevent text selection
+        const containerRect = containerRef.current.getBoundingClientRect();
 
-    // Boundary checks
-    const maxX = 682 - rect.width;
-    const maxY = 384 - rect.height;
+        setDragOffset({
+            x: e.clientX - (containerRect.left + rect.x),
+            y: e.clientY - (containerRect.top + rect.y)
+        });
+        setIsDragging(true);
+    };
 
-    newX = Math.max(0, Math.min(newX, maxX));
-    newY = Math.max(0, Math.min(newY, maxY));
+    const handleMouseMove = (e) => {
+        if (!isDragging) {
+            return;
+        }
 
-    setRect(prev => ({
-      ...prev,
-      x: newX,
-      y: newY
-    }));
-  };
+        const containerRect = containerRef.current.getBoundingClientRect();
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+        // Calculate new position relative to container
+        // We need to account for the container's position on screen
+        // But since rect.x/y are relative to container, we just need mouse movement
 
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    try {
-      await onComplete(rect);
-    } catch (error) {
-      console.error("Error submitting round:", error);
-      setSubmitting(false);
-    }
-  };
+        // Actually, simpler approach:
+        // New X = Mouse X - Container Left - Drag Offset X
 
-  return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <Typography variant="h6" gutterBottom>
+        let newX = e.clientX - containerRect.left - dragOffset.x;
+        let newY = e.clientY - containerRect.top - dragOffset.y;
+
+        // Boundary checks
+        const maxX = 682 - rect.width;
+        const maxY = 384 - rect.height;
+
+        newX = Math.max(0, Math.min(newX, maxX));
+        newY = Math.max(0, Math.min(newY, maxY));
+
+        setRect(prev => ({
+            ...prev,
+            x: newX,
+            y: newY
+        }));
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleSubmit = async () => {
+        setSubmitting(true);
+        try {
+            await onComplete(rect);
+        }
+        catch (error) {
+            console.error("Error submitting round:", error);
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <Container maxWidth="md" sx={{ mt: 4 }}>
+            <Paper elevation={3} sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom>
           Adjust the rectangle to the correct position.
-        </Typography>
-        
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-          <div
-            ref={containerRef}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            style={{
-              width: '682px',
-              height: '384px',
-              position: 'relative',
-              backgroundImage: `url(${imageSrc})`,
-              backgroundSize: 'cover',
-              border: '1px solid #ccc'
-            }}
-          >
-            {!imageSrc && (
-                <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#eee' }}>
-                    Image Placeholder
-                </Box>
-            )}
-            
-            <div
-              onMouseDown={handleMouseDown}
-              style={{
-                position: 'absolute',
-                left: rect.x,
-                top: rect.y,
-                width: rect.width,
-                height: rect.height,
-                border: '2px solid red',
-                backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                cursor: isDragging ? 'grabbing' : 'grab'
-              }}
-            />
-          </div>
-        </Box>
+                </Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button 
-            variant="contained" 
-            onClick={handleSubmit}
-            size="large"
-            disabled={submitting}
-          >
-            {submitting ? 'Saving...' : 'Finish Round'}
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
-  );
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                    <div
+                        ref={containerRef}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        style={{
+                            width: '682px',
+                            height: '384px',
+                            position: 'relative',
+                            backgroundImage: `url(${imageSrc})`,
+                            backgroundSize: 'cover',
+                            border: '1px solid #ccc'
+                        }}
+                    >
+                        {!imageSrc && (
+                            <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#eee' }}>
+                    Image Placeholder
+                            </Box>
+                        )}
+
+                        <div
+                            onMouseDown={handleMouseDown}
+                            style={{
+                                position: 'absolute',
+                                left: rect.x,
+                                top: rect.y,
+                                width: rect.width,
+                                height: rect.height,
+                                border: '2px solid red',
+                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                cursor: isDragging ? 'grabbing' : 'grab'
+                            }}
+                        />
+                    </div>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        variant="contained"
+                        onClick={handleSubmit}
+                        size="large"
+                        disabled={submitting}
+                    >
+                        {submitting ? 'Saving...' : 'Save'}
+                    </Button>
+                </Box>
+            </Paper>
+        </Container>
+    );
 };
 
 export default AdjustmentView;
