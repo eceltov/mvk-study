@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import StudyForm from './components/StudyForm';
+import StudyManager from './components/study/StudyManager';
 import './App.css';
 
 const theme = createTheme({
@@ -16,9 +16,9 @@ const theme = createTheme({
 });
 
 function App() {
+  const [prolificId, setProlificId] = useState('');
   const [startTime] = useState(Date.now());
   const [timeSpent, setTimeSpent] = useState(0);
-  const [prolificId, setProlificId] = useState('');
 
   useEffect(() => {
     // Capture Prolific ID from URL parameters
@@ -38,14 +38,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
-        <StudyForm 
-          timeSpent={timeSpent} 
-          prolificId={prolificId}
-          startTime={startTime}
-        />
+        <StudyManager prolificId={prolificId} globalTimeSpent={timeSpent} />
       </div>
     </ThemeProvider>
   );
 }
+
 
 export default App;
