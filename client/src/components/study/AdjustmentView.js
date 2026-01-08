@@ -74,8 +74,8 @@ const AdjustmentView = ({ imageSrc, initialRect, onComplete }) => {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4 }}>
-            <Paper elevation={3} sx={{ p: 3 }}>
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            <Paper elevation={3} sx={{ px: 3, pb: 3, pt: 1 }}>
                 <Typography variant="h6" gutterBottom>
           Adjust the rectangle to the correct position.
                 </Typography>

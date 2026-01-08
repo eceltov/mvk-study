@@ -22,6 +22,7 @@ const StudyManager = ({ prolificId }) => {
     const [allRoundsData, setAllRoundsData] = useState([]);
     const [phaseStartTime, setPhaseStartTime] = useState(null);
     const [studyStartTime, setStudyStartTime] = useState(null);
+    const [instructionTimings, setInstructionTimings] = useState([]);
 
     // New state for dynamic round config
     const [currentRoundConfig, setCurrentRoundConfig] = useState(null);
@@ -73,7 +74,8 @@ const StudyManager = ({ prolificId }) => {
         }
     };
 
-    const handleStart = async () => {
+    const handleStart = async (timings) => {
+        setInstructionTimings(timings);
         const success = await fetchNextRound();
         if (success) {
             setStudyStartTime(new Date().toISOString());
@@ -152,11 +154,13 @@ const StudyManager = ({ prolificId }) => {
             const payload = {
                 prolificId,
                 studyStart: studyStartTime,
+                instructionTimings,
                 rounds: updatedRoundsData.map(r => ({
                     roundId: r.config.id,
                     roundStart: r.data.roundStart,
                     imageDuration: r.data.imageDuration,
                     distractorDuration: r.data.distractorDuration,
+                    distractorProblem: r.config.mathProblem,
                     distractorAnswer: r.data.distractorAnswer,
                     drawingDuration: r.data.drawingDuration,
                     initialRect: r.data.initialRect,
@@ -237,8 +241,8 @@ const StudyManager = ({ prolificId }) => {
             )}
 
             {phase === PHASES.COMPLETED && (
-                <Container maxWidth="sm" sx={{ mt: 10 }}>
-                    <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
+                <Container maxWidth="sm" sx={{ py: 10 }}>
+                    <Paper elevation={3} sx={{ px: 4, pb: 4, pt: 2, textAlign: 'center' }}>
                         <Typography variant="h4" gutterBottom>
               Study Completed
                         </Typography>

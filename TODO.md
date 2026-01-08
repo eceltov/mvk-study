@@ -1,0 +1,1 @@
+add a checkbox at the end to see whether the user has any prior marine knowledge (this should be after examples of how to process images, so the user has an idea of what to expect)
