@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Button, Typography, Paper, Container } from '@mui/material';
 
-const AdjustmentView = ({ imageSrc, initialRect, onComplete }) => {
+const AdjustmentView = ({ imageSrc, initialRect, objectDesc, onComplete }) => {
     const [rect, setRect] = useState(initialRect);
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -116,6 +116,17 @@ const AdjustmentView = ({ imageSrc, initialRect, onComplete }) => {
                         />
                     </div>
                 </Box>
+
+                {objectDesc && (
+                    <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+                            Your Description:
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontStyle: 'italic', bgcolor: '#f5f5f5', p: 2, borderRadius: 1 }}>
+                            {objectDesc}
+                        </Typography>
+                    </Box>
+                )}
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button

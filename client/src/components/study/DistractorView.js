@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Box, Typography, TextField, Paper, Button } from '@mui/material';
+import { Box, Typography, TextField, Paper, Button, Container } from '@mui/material';
 
 const DistractorView = ({ mathProblem, duration, onComplete }) => {
     const [answer, setAnswer] = useState('');
@@ -31,15 +31,7 @@ const DistractorView = ({ mathProblem, duration, onComplete }) => {
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100vh',
-                bgcolor: 'white',
-            }}
-        >
+        <Container maxWidth="sm" sx={{ py: 8 }}>
             <Paper elevation={3} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                 <Typography variant="h5" gutterBottom>
           Solve the problem:
@@ -66,7 +58,7 @@ const DistractorView = ({ mathProblem, duration, onComplete }) => {
           Please solve this while you wait.
                 </Typography>
             </Paper>
-        </Box>
+        </Container>
     );
 };
 

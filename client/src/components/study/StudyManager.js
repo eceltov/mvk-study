@@ -236,6 +236,7 @@ const StudyManager = ({ prolificId }) => {
                     key={currentRoundIndex}
                     imageSrc={allRoundsData[currentRoundIndex]?.config.imageSrc}
                     initialRect={allRoundsData[currentRoundIndex]?.data.initialRect}
+                    objectDesc={allRoundsData[currentRoundIndex]?.data.objectDesc}
                     onComplete={handleAdjustmentComplete}
                 />
             )}
